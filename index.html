@@ -252,18 +252,20 @@ svg.graph { width: 100%; height: 110px; }
 @keyframes rise { from { transform: scaleY(0); } }
 @keyframes drop { from { transform: translateY(-70px) rotate(-30deg); opacity: 0; } }
 .switch {
-  width: 74px; height: 42px; border-radius: 999px; padding: 4px;
+  position: relative;
+  width: 74px; height: 42px; border-radius: 999px;
   background: rgba(255,255,255,.28); border: 1px solid rgba(255,255,255,.5);
-  margin-bottom: 14px;
+  margin: 0 auto 14px;
 }
 .knob {
-  width: 34px; height: 34px; border-radius: 50%; background: white;
+  position: absolute; top: 6px; left: 6px;
+  width: 30px; height: 30px; border-radius: 50%; background: white;
   animation: flip 4.5s ease-in-out infinite;
 }
 @keyframes flip {
-  0%, 18% { transform: translateX(0); }
-  32%, 78% { transform: translateX(32px); }
-  92%, 100% { transform: translateX(0); }
+  0%, 18% { transform: translate(1px, 1px); }
+  34%, 78% { transform: translate(28px, -2px); }
+  94%, 100% { transform: translate(1px, 1px); }
 }
 .flow { display: flex; align-items: center; gap: 18px; color: white; }
 .glass-box {
