@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Presscore — 菜单栏里的键鼠统计</title>
-<meta name="description" content="Presscore 住在 macOS 菜单栏里，统计按键、点击、开机时长和前台应用。数据只留在这台 Mac 上。窗口关掉以后几乎不耗电。">
+<meta name="description" content="Presscore 住在 macOS 菜单栏里，统计按键、点击、开机时长和前台应用。在线默认关闭，关掉时不联网。打开之后才检查更新，并按你勾选的范围和好友比较合计。">
 <meta property="og:title" content="Presscore">
-<meta property="og:description" content="看见每一次敲击。关到菜单栏之后，几乎不耗电。">
+<meta property="og:description" content="看见每一次敲击。在线默认关闭。关到菜单栏之后，几乎不耗电。">
 <meta property="og:url" content="https://terry1238832.github.io/Presscore/">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='3' y='3' width='26' height='26' rx='8' fill='%235b57f5'/%3E%3Crect x='9' y='9' width='14' height='14' rx='4' fill='none' stroke='white' stroke-width='2.4'/%3E%3C/svg%3E">
 <style>
@@ -233,6 +233,38 @@ h2 { font-size: clamp(32px, 4vw, 48px); letter-spacing: -.04em; margin: 0 0 8px;
 svg.graph { width: 100%; height: 110px; }
 .graph polyline { fill: none; stroke: white; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
 .privacy { background: linear-gradient(120deg, #3aa0d8, #4d6df0); }
+.friends { background: linear-gradient(120deg, #ee5a8a, #ff9a4a); }
+.podium { display: flex; align-items: flex-end; gap: 12px; height: 210px; }
+.step {
+  width: 78px; border-radius: 16px 16px 8px 8px; color: white;
+  display: flex; align-items: flex-start; justify-content: center;
+  font-size: 28px; font-weight: 800; padding-top: 8px;
+  transform-origin: bottom; animation: rise .9s cubic-bezier(.2,1.4,.3,1) both;
+}
+.step.s2 { height: 96px; background: rgba(255,255,255,.55); color: #ee5a8a; animation-delay: .15s; }
+.step.s1 { height: 132px; background: white; color: #ee5a8a; animation-delay: .32s; position: relative; }
+.step.s3 { height: 72px; background: rgba(255,255,255,.4); animation-delay: .02s; }
+.crown {
+  position: absolute; top: -34px; font-size: 26px;
+  animation: drop 1s cubic-bezier(.2,1.5,.3,1) .7s both;
+  filter: drop-shadow(0 6px 8px rgba(0,0,0,.2));
+}
+@keyframes rise { from { transform: scaleY(0); } }
+@keyframes drop { from { transform: translateY(-70px) rotate(-30deg); opacity: 0; } }
+.switch {
+  width: 74px; height: 42px; border-radius: 999px; padding: 4px;
+  background: rgba(255,255,255,.28); border: 1px solid rgba(255,255,255,.5);
+  margin-bottom: 14px;
+}
+.knob {
+  width: 34px; height: 34px; border-radius: 50%; background: white;
+  animation: flip 4.5s ease-in-out infinite;
+}
+@keyframes flip {
+  0%, 18% { transform: translateX(0); }
+  32%, 78% { transform: translateX(32px); }
+  92%, 100% { transform: translateX(0); }
+}
 .flow { display: flex; align-items: center; gap: 18px; color: white; }
 .glass-box {
   min-width: 120px; padding: 18px; border-radius: 24px; text-align: center;
@@ -295,6 +327,7 @@ footer { text-align: center; color: var(--faint); padding: 10px 16px 40px; font-
     <a href="#features"><span class="zh">功能</span><span class="en">Features</span></a>
     <a href="#energy"><span class="zh">能耗</span><span class="en">Energy</span></a>
     <a href="#privacy"><span class="zh">隐私</span><span class="en">Privacy</span></a>
+    <a href="#online"><span class="zh">在线</span><span class="en">Online</span></a>
     <a href="#about"><span class="zh">关于</span><span class="en">About</span></a>
   </div>
   <div class="spacer"></div>
@@ -306,11 +339,11 @@ footer { text-align: center; color: var(--faint); padding: 10px 16px 40px; font-
   <div class="kicker"><span class="zh">关到菜单栏 · 几乎不耗电</span><span class="en">Menu bar · almost no power</span></div>
   <h1><span class="zh">看见每一次敲击</span><span class="en">See every keystroke</span></h1>
   <p class="lede">
-    <span class="zh">Presscore 住在 macOS 菜单栏里，记下按键、点击、开机时长和每个应用的前台时间。数据只在这台 Mac 上。窗口一关，画面全停。</span>
-    <span class="en">Presscore lives in the macOS menu bar and counts keystrokes, clicks, screen time, and time in each app. Everything stays on this Mac. Close the window and the drawing stops.</span>
+    <span class="zh">Presscore 住在 macOS 菜单栏里，记下按键、点击、开机时长和每个应用的前台时间。在线默认关闭，关掉时不联网。窗口一关，画面全停。</span>
+    <span class="en">Presscore lives in the macOS menu bar and counts keystrokes, clicks, screen time, and time in each app. Online is off unless you turn it on, and while it is off nothing goes online. Close the window and the drawing stops.</span>
   </p>
   <div class="row">
-    <a class="cta solid" href="https://github.com/Terry1238832/Presscore/releases/download/v1.0.1/Presscore-1.0.1.dmg"><span class="zh">下载 macOS 版</span><span class="en">Download for Mac</span></a>
+    <a class="cta solid" href="https://github.com/Terry1238832/Presscore/releases/download/v1.0.2/Presscore-1.0.2.dmg"><span class="zh">下载 macOS 版 1.0.2</span><span class="en">Download 1.0.2 for Mac</span></a>
     <a class="cta" href="#features"><span class="zh">看看它做什么</span><span class="en">See what it does</span></a>
   </div>
   <p class="lede" style="font-size:14px;margin-top:14px">
@@ -365,12 +398,35 @@ footer { text-align: center; color: var(--faint); padding: 10px 16px 40px; font-
 
 <section class="block" id="privacy">
   <h2><span class="zh">只数次数，不看内容</span><span class="en">Counts, never content</span></h2>
-  <p class="sub"><span class="zh">只记按了哪个键、按了几次，不记你打的字。SQLite 存在本机，不联网。统计键盘需要系统里的「输入监控」，由你自己打开。</span><span class="en">It records which key and how often, never what you type. SQLite stays on this Mac and never goes online. Keyboard counting needs Input Monitoring, which you turn on yourself.</span></p>
+  <p class="sub"><span class="zh">只记按了哪个键、按了几次，不记你打的字，也不上传按键顺序。在线默认关闭；关掉时数据只在这台 Mac。打开之后，也只上传你勾选的合计。统计键盘需要「输入监控」，由你自己打开。</span><span class="en">It records which key and how often, never what you type, and never the order of keys. Online is off unless you turn it on, and while it is off everything stays on this Mac. Turned on, it uploads only the totals you choose. Keyboard counting needs Input Monitoring, which you turn on yourself.</span></p>
   <div class="panel privacy">
     <div class="flow">
       <div class="glass-box">A<br><small style="font-weight:600;opacity:.8">Hello ✕</small></div>
       <div class="dots"></div>
       <div class="glass-box">1,672<br><small style="font-weight:600;opacity:.8"><span class="zh">只存本机</span><span class="en">This Mac only</span></small></div>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="online">
+  <h2><span class="zh">在线，由你打开</span><span class="en">Online, only if you want it</span></h2>
+  <p class="sub"><span class="zh">在设置里打开「在线」之后，才会检查更新，也才会和好友比较。关掉它，Presscore 不连接任何网络。分享的只有你勾选的合计，今天用了哪些应用也可以只挑几个。</span><span class="en">Turn on Online in Settings and Presscore can check for updates and compare with friends. Turn it off and it makes no network connections. Only the totals you choose are shared, and you can pick which of today’s apps to include.</span></p>
+  <div class="grid">
+    <article class="card"><div class="ico" style="background:linear-gradient(135deg,#3d8bff,#7a5cf5)">↓</div><h3><span class="zh">软件更新</span><span class="en">Updates</span></h3><p><span class="zh">手动检查，或打开自动检查。发现新版本会先问你，同意之后才下载安装。</span><span class="en">Check by hand, or let it check automatically. A new version always asks before it downloads.</span></p></article>
+    <article class="card"><div class="ico" style="background:linear-gradient(135deg,#2fbd6b,#1ab8c6)">☑</div><h3><span class="zh">共享范围</span><span class="en">What you share</span></h3><p><span class="zh">今日按键、点击、使用时长、近 7 天按键，以及今天的应用。新应用可以自动带上，也可以只共享勾选的。</span><span class="en">Keys, clicks, screen time, keys over 7 days, and today’s apps. New apps can join automatically, or only the ones you check.</span></p></article>
+    <article class="card"><div class="ico" style="background:linear-gradient(135deg,#ee5a8a,#ff9a4a)">♛</div><h3><span class="zh">好友</span><span class="en">Friends</span></h3><p><span class="zh">创建身份后侧边栏出现好友页。用 UID 加好友，信箱收申请。可以改头像、名字，再写一句格言。</span><span class="en">Create an identity and a Friends page joins the sidebar. Add people by UID, and requests land in the mailbox. Set an avatar, a name, and a short motto.</span></p></article>
+  </div>
+  <div class="panel friends" aria-hidden="true">
+    <div style="display:flex;align-items:flex-end;gap:48px">
+      <div style="text-align:center;color:white;font-weight:800">
+        <div class="switch"><div class="knob"></div></div>
+        <span class="zh">在线</span><span class="en">Online</span>
+      </div>
+      <div class="podium">
+        <div class="step s2">2</div>
+        <div class="step s1"><span class="crown">♛</span>1</div>
+        <div class="step s3">3</div>
+      </div>
     </div>
   </div>
 </section>
@@ -387,7 +443,7 @@ footer { text-align: center; color: var(--faint); padding: 10px 16px 40px; font-
 </section>
 
 <footer>
-  Presscore · <span class="zh">菜单栏应用，数据不上传</span><span class="en">Menu bar app. Nothing is uploaded.</span>
+  Presscore 1.0.2 · <span class="zh">在线默认关闭。关掉时，什么都不上传。</span><span class="en">Online starts off. While it is off, nothing is uploaded.</span>
 </footer>
 <script>
 const root = document.documentElement;
