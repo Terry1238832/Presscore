@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Presscore — 菜单栏里的键鼠统计</title>
+<meta name="description" content="Presscore 住在 macOS 菜单栏里，统计按键、点击、开机时长和前台应用。数据只留在这台 Mac 上。窗口关掉以后几乎不耗电。">
+<meta property="og:title" content="Presscore">
+<meta property="og:description" content="看见每一次敲击。关到菜单栏之后，几乎不耗电。">
+<meta property="og:url" content="https://terry1238832.github.io/Presscore/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='3' y='3' width='26' height='26' rx='8' fill='%235b57f5'/%3E%3Crect x='9' y='9' width='14' height='14' rx='4' fill='none' stroke='white' stroke-width='2.4'/%3E%3C/svg%3E">
+<style>
+:root {
+  --bg: #0e1016;
+  --ink: #f4f5f8;
+  --muted: rgba(244,245,248,.68);
+  --faint: rgba(244,245,248,.42);
+  --line: rgba(255,255,255,.16);
+  --glass: rgba(255,255,255,.08);
+  --shadow: 0 30px 80px rgba(0,0,0,.35);
+  --blue: #3d7cf7;
+  --orange: #fa7838;
+  --teal: #1ab8c6;
+  --violet: #7d5cf5;
+  --green: #2fbd6b;
+  --pink: #f2669e;
+  color-scheme: dark;
+}
+html[data-theme="light"] {
+  --bg: #f3f3f7;
+  --ink: #1c1c1f;
+  --muted: rgba(28,28,31,.66);
+  --faint: rgba(28,28,31,.45);
+  --line: rgba(255,255,255,.7);
+  --glass: rgba(255,255,255,.55);
+  --shadow: 0 24px 60px rgba(40,40,80,.12);
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  font-family: ui-rounded, "SF Pro Rounded", "SF Pro Display", -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif;
+  color: var(--ink);
+  background: var(--bg);
+  overflow-x: hidden;
+}
+.mesh {
+  position: fixed; inset: -10vh; z-index: -1;
+  background:
+    radial-gradient(40vw 40vw at 12% 8%, color-mix(in srgb, var(--blue) 55%, transparent), transparent 70%),
+    radial-gradient(36vw 36vw at 88% 0%, color-mix(in srgb, var(--violet) 50%, transparent), transparent 70%),
+    radial-gradient(42vw 42vw at 80% 90%, color-mix(in srgb, var(--orange) 42%, transparent), transparent 72%),
+    radial-gradient(30vw 30vw at 8% 90%, color-mix(in srgb, var(--teal) 40%, transparent), transparent 70%),
+    var(--bg);
+  animation: drift 18s ease-in-out infinite alternate;
+}
+@keyframes drift {
+  from { transform: translate3d(0,0,0) scale(1); }
+  to { transform: translate3d(-2%, 2%, 0) scale(1.06); }
+}
+a { color: inherit; }
+nav {
+  position: sticky; top: 14px; z-index: 20;
+  display: flex; align-items: center; gap: 18px;
+  width: min(1080px, calc(100% - 28px));
+  margin: 14px auto 0;
+  padding: 10px 14px 10px 16px;
+  border-radius: 999px;
+  background: var(--glass);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(28px) saturate(1.6);
+  -webkit-backdrop-filter: blur(28px) saturate(1.6);
+}
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 700; letter-spacing: -.02em; text-decoration: none; }
+.cap {
+  width: 28px; height: 28px; border-radius: 8px;
+  background: linear-gradient(135deg, #5b6bff, #f2669e);
+  box-shadow: inset 0 0 0 2px rgba(255,255,255,.85), 0 8px 16px rgba(90,80,255,.35);
+}
+nav .links { display: flex; gap: 16px; margin-left: 8px; }
+nav .links a { text-decoration: none; color: var(--muted); font-size: 14px; font-weight: 600; }
+nav .links a:hover { color: var(--ink); }
+.spacer { flex: 1; }
+.pill, .cta {
+  border: 0; cursor: pointer; font: inherit; font-weight: 700; font-size: 13px;
+  color: var(--ink); text-decoration: none;
+  background: var(--glass); border: 1px solid var(--line);
+  border-radius: 999px; padding: 8px 12px;
+  backdrop-filter: blur(16px);
+}
+.cta.solid {
+  color: white; border: 0;
+  background: linear-gradient(180deg, #6aa2ff, #3d6ef0);
+  box-shadow: 0 10px 24px rgba(61,110,240,.35);
+}
+.hero { width: min(1080px, calc(100% - 28px)); margin: 54px auto 0; text-align: center; }
+.kicker {
+  display: inline-flex; gap: 8px; align-items: center;
+  padding: 6px 12px; border-radius: 999px;
+  background: color-mix(in srgb, var(--green) 18%, transparent);
+  color: var(--green); font-weight: 800; font-size: 13px;
+}
+h1 {
+  font-size: clamp(46px, 7vw, 88px);
+  line-height: .98; letter-spacing: -.045em;
+  margin: 16px 0 12px;
+}
+.lede { max-width: 640px; margin: 0 auto 22px; font-size: 20px; line-height: 1.45; color: var(--muted); }
+.row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.stage {
+  position: relative; height: 280px; margin: 36px auto 0;
+  border-radius: 32px; overflow: hidden;
+  background: linear-gradient(120deg, #5b7cfa, #8a63f6 45%, #f27ab0);
+  box-shadow: var(--shadow);
+}
+html[data-theme="light"] .stage { background: linear-gradient(120deg, #7aa2ff, #b07bff 50%, #ff9ec4); }
+.ring {
+  position: absolute; left: 50%; top: 52%;
+  border: 2px solid rgba(255,255,255,.45); border-radius: 999px;
+  transform: translate(-50%, -50%) scale(.4);
+  animation: ring 2.8s ease-out infinite;
+}
+.ring:nth-child(2) { animation-delay: .9s; }
+.ring:nth-child(3) { animation-delay: 1.8s; }
+@keyframes ring {
+  to { transform: translate(-50%, -50%) scale(1.35); opacity: 0; }
+}
+.keys { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: 14px; }
+.key {
+  width: 74px; height: 74px; border-radius: 18px;
+  display: grid; place-items: center;
+  font-size: 28px; font-weight: 800; color: white;
+  background: rgba(255,255,255,.18);
+  border: 1px solid rgba(255,255,255,.45);
+  box-shadow: 0 16px 30px rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.6);
+  backdrop-filter: blur(10px);
+  animation: press 2.6s cubic-bezier(.2,1.4,.3,1) infinite;
+}
+.key:nth-child(1) { animation-delay: .15s; transform: translateY(10px); }
+.key:nth-child(2) { animation-delay: .31s; transform: translateY(-8px); }
+.key:nth-child(3) { animation-delay: .47s; }
+.key:nth-child(4) { animation-delay: .63s; transform: translateY(-8px); }
+.key:nth-child(5) { animation-delay: .79s; transform: translateY(10px); }
+@keyframes press {
+  0%, 18%, 100% { translate: 0 0; scale: 1 1; }
+  6% { translate: 0 12px; scale: 1.08 .86; }
+  12% { translate: 0 -8px; scale: .98 1.08; }
+}
+.plus {
+  position: absolute; font-weight: 800; color: white; opacity: 0;
+  animation: float 2.6s ease-out infinite;
+}
+.plus:nth-of-type(1) { left: 22%; animation-delay: .35s; }
+.plus:nth-of-type(2) { left: 36%; animation-delay: .51s; }
+.plus:nth-of-type(3) { left: 49%; animation-delay: .67s; }
+.plus:nth-of-type(4) { left: 62%; animation-delay: .83s; }
+.plus:nth-of-type(5) { left: 74%; animation-delay: .99s; }
+@keyframes float {
+  0%, 8% { opacity: 0; transform: translateY(20px) scale(.6); }
+  20% { opacity: 1; }
+  42% { opacity: 0; transform: translateY(-46px) scale(1.15); }
+  100% { opacity: 0; }
+}
+section.block { width: min(1080px, calc(100% - 28px)); margin: 88px auto; }
+h2 { font-size: clamp(32px, 4vw, 48px); letter-spacing: -.04em; margin: 0 0 8px; }
+.sub { color: var(--muted); font-size: 18px; max-width: 640px; line-height: 1.45; }
+.grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 28px; }
+.card {
+  padding: 22px; border-radius: 28px;
+  background: var(--glass); border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(22px) saturate(1.5);
+  transform: translateY(28px) scale(.96); opacity: 0;
+}
+.card.in { animation: land .8s cubic-bezier(.2,1.3,.3,1) forwards; }
+@keyframes land { to { transform: none; opacity: 1; } }
+.card h3 { margin: 12px 0 6px; font-size: 20px; letter-spacing: -.02em; }
+.card p { margin: 0; color: var(--muted); line-height: 1.4; }
+.ico {
+  width: 42px; height: 42px; border-radius: 13px; display: grid; place-items: center;
+  color: white; font-size: 20px;
+}
+.panel {
+  margin-top: 22px; border-radius: 32px; overflow: hidden; min-height: 280px;
+  display: grid; place-items: center; position: relative;
+  box-shadow: var(--shadow);
+}
+.heat { background: linear-gradient(120deg, #ff8a4a, #ff5d73); perspective: 800px; }
+.board {
+  transform: rotateX(28deg) rotateY(-8deg);
+  padding: 16px; border-radius: 22px;
+  background: linear-gradient(180deg, rgba(255,255,255,.38), rgba(255,255,255,.14));
+  border: 1px solid rgba(255,255,255,.5);
+  animation: sway 5s ease-in-out infinite;
+}
+@keyframes sway { 50% { transform: rotateX(28deg) rotateY(8deg); } }
+.board row, .rowk { display: flex; gap: 6px; justify-content: center; margin-top: 6px; }
+.k {
+  width: 28px; height: 24px; border-radius: 6px;
+  background: #eef2ff; animation: heat 4.5s ease-in-out infinite;
+}
+.k.hot { animation-delay: .2s; }
+.k.mid { animation-delay: .8s; }
+.k.wide { width: 160px; }
+@keyframes heat {
+  0%, 15% { background: #eef2ff; transform: none; }
+  55% { background: #ff5a4a; box-shadow: 0 0 12px #ff5a4a; transform: translateY(2px) scale(.92); }
+  100% { background: #eef2ff; }
+}
+.energy { background: linear-gradient(120deg, #3dce7a, #1aa8b0); color: white; }
+.energy-inner { display: flex; gap: 28px; align-items: center; padding: 28px; width: min(860px, 100%); }
+.battery {
+  width: 168px; height: 86px; border-radius: 20px; position: relative;
+  background: rgba(255,255,255,.2); border: 1px solid rgba(255,255,255,.5);
+  display: grid; place-items: center; font-size: 34px;
+}
+.battery:after {
+  content: ""; position: absolute; right: -10px; top: 28px; width: 6px; height: 28px; border-radius: 4px; background: rgba(255,255,255,.7);
+}
+.fill {
+  position: absolute; left: 6px; top: 6px; bottom: 6px; width: 92%;
+  border-radius: 14px; background: linear-gradient(#b6ffc4, #3dce7a);
+  animation: charge 6s ease-in-out infinite;
+}
+@keyframes charge { 0%, 40% { width: 55%; } 70%, 100% { width: 94%; } }
+.cpu { flex: 1; }
+.cpu b { font-size: 42px; letter-spacing: -.04em; display: block; }
+svg.graph { width: 100%; height: 110px; }
+.graph polyline { fill: none; stroke: white; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.privacy { background: linear-gradient(120deg, #3aa0d8, #4d6df0); }
+.flow { display: flex; align-items: center; gap: 18px; color: white; }
+.glass-box {
+  min-width: 120px; padding: 18px; border-radius: 24px; text-align: center;
+  background: rgba(255,255,255,.16); border: 1px solid rgba(255,255,255,.45);
+  backdrop-filter: blur(8px); font-weight: 800;
+}
+.dots { width: 120px; height: 8px; border-radius: 99px; background: rgba(255,255,255,.25); position: relative; overflow: hidden; }
+.dots:before {
+  content: ""; position: absolute; width: 10px; height: 10px; border-radius: 50%; background: white; top: -1px;
+  animation: travel 1.6s linear infinite;
+}
+@keyframes travel { from { left: -10px; } to { left: 120px; } }
+.about {
+  display: grid; grid-template-columns: 280px 1fr; gap: 18px; margin-top: 22px;
+}
+.who, .works {
+  border-radius: 28px; padding: 22px;
+  background: var(--glass); border: 1px solid var(--line);
+  backdrop-filter: blur(22px);
+}
+.avatar {
+  width: 84px; height: 84px; border-radius: 26px;
+  display: grid; place-items: center; color: white; font-size: 40px; font-weight: 800;
+  background: linear-gradient(135deg, var(--violet), var(--pink));
+  box-shadow: 0 16px 30px rgba(120,70,240,.35);
+}
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.chips span, .work {
+  border-radius: 999px; padding: 6px 10px; font-size: 13px; font-weight: 700;
+  background: color-mix(in srgb, var(--violet) 16%, transparent);
+}
+.work {
+  display: block; text-decoration: none; border-radius: 18px; padding: 14px; margin-top: 10px;
+  background: var(--glass); border: 1px solid var(--line);
+}
+.work small { display: block; color: var(--faint); font-weight: 600; margin-top: 4px; }
+footer { text-align: center; color: var(--faint); padding: 10px 16px 40px; font-size: 13px; }
+@media (max-width: 800px) {
+  nav .links { display: none; }
+  .grid, .about, .energy-inner { grid-template-columns: 1fr; display: grid; }
+  .key { width: 48px; height: 48px; font-size: 18px; border-radius: 12px; }
+  .flow { flex-direction: column; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .card { opacity: 1; transform: none; }
+}
+</style>
+</head>
+<body>
+<div class="mesh"></div>
+<nav>
+  <a class="brand" href="#top"><span class="cap"></span> Presscore</a>
+  <div class="links">
+    <a href="#features"><span class="zh">功能</span><span class="en">Features</span></a>
+    <a href="#energy"><span class="zh">能耗</span><span class="en">Energy</span></a>
+    <a href="#privacy"><span class="zh">隐私</span><span class="en">Privacy</span></a>
+    <a href="#about"><span class="zh">关于</span><span class="en">About</span></a>
+  </div>
+  <div class="spacer"></div>
+  <button class="pill" id="lang" type="button">English</button>
+  <button class="pill" id="theme" type="button">☾</button>
+  <a class="cta solid" href="https://github.com/Terry1238832">GitHub</a>
+</nav>
+
+<header class="hero" id="top">
+  <div class="kicker"><span class="zh">关到菜单栏 · 几乎不耗电</span><span class="en">Menu bar · almost no power</span></div>
+  <h1><span class="zh">看见每一次敲击</span><span class="en">See every keystroke</span></h1>
+  <p class="lede">
+    <span class="zh">Presscore 住在 macOS 菜单栏里，记下按键、点击、开机时长和每个应用的前台时间。数据只在这台 Mac 上。窗口一关，画面全停。</span>
+    <span class="en">Presscore lives in the macOS menu bar and counts keystrokes, clicks, screen time, and time in each app. Everything stays on this Mac. Close the window and the drawing stops.</span>
+  </p>
+  <div class="row">
+    <a class="cta solid" href="#features"><span class="zh">看看它做什么</span><span class="en">See what it does</span></a>
+    <a class="cta" href="https://github.com/Terry1238832"><span class="zh">作者的 GitHub</span><span class="en">Author on GitHub</span></a>
+  </div>
+  <div class="stage" aria-hidden="true">
+    <div class="ring" style="width:520px;height:140px"></div>
+    <div class="ring" style="width:520px;height:140px"></div>
+    <div class="ring" style="width:520px;height:140px"></div>
+    <div class="keys">
+      <div class="key">P</div><div class="key">R</div><div class="key">E</div><div class="key">S</div><div class="key">S</div>
+    </div>
+    <span class="plus">+1</span><span class="plus">+1</span><span class="plus">+1</span><span class="plus">+1</span><span class="plus">+1</span>
+  </div>
+</header>
+
+<section class="block" id="features">
+  <h2><span class="zh">一天，摊开来看</span><span class="en">A day, laid out</span></h2>
+  <p class="sub"><span class="zh">热力图、回放、点击占比、两周时长、应用排行。界面是液态玻璃，动画故意做得很明显。</span><span class="en">A heatmap, playback, click share, two weeks of time, and an app ranking. Liquid glass, with motion turned up.</span></p>
+  <div class="grid">
+    <article class="card"><div class="ico" style="background:linear-gradient(135deg,#ff8a3d,#ff4d5a)">⌨</div><h3><span class="zh">3D 键盘</span><span class="en">3D keyboard</span></h3><p><span class="zh">按得越多越红。可以转着看，也能铺满窗口，按天回放。</span><span class="en">Keys glow with use. Orbit it, fill the window, or play a day back.</span></p></article>
+    <article class="card"><div class="ico" style="background:linear-gradient(135deg,#1ab8c6,#3d7cf7)">◎</div><h3><span class="zh">鼠标</span><span class="en">Clicks</span></h3><p><span class="zh">左键、右键、中键分开计数，看占比和最近的点击。</span><span class="en">Left, right, and middle clicks, with share and recent history.</span></p></article>
+    <article class="card"><div class="ico" style="background:linear-gradient(135deg,#7d5cf5,#f2669e)">▦</div><h3><span class="zh">时长与应用</span><span class="en">Time and apps</span></h3><p><span class="zh">未休眠的开机时间，和每个前台应用各待了多久。</span><span class="en">Awake screen time, and how long each app stayed in front.</span></p></article>
+  </div>
+  <div class="panel heat" aria-hidden="true">
+    <div class="board">
+      <div class="rowk"><i class="k"></i><i class="k hot"></i><i class="k hot"></i><i class="k mid"></i><i class="k"></i><i class="k hot"></i><i class="k mid"></i><i class="k"></i><i class="k hot"></i><i class="k"></i></div>
+      <div class="rowk"><i class="k mid"></i><i class="k hot"></i><i class="k hot"></i><i class="k"></i><i class="k hot"></i><i class="k mid"></i><i class="k hot"></i><i class="k"></i><i class="k mid"></i></div>
+      <div class="rowk"><i class="k"></i><i class="k mid"></i><i class="k hot"></i><i class="k hot"></i><i class="k mid"></i><i class="k"></i><i class="k hot"></i></div>
+      <div class="rowk"><i class="k wide hot"></i></div>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="energy">
+  <h2><span class="zh">放在后台，几乎不耗电</span><span class="en">Almost no power in the background</span></h2>
+  <p class="sub"><span class="zh">窗口收进菜单栏之后，键盘预览、动画和界面刷新全部停下。只剩计数，每 5 秒批量写一次。实测关窗后一分钟大约只用 10 毫秒 CPU。</span><span class="en">Once the window is in the menu bar, the keyboard preview, animation, and interface updates all stop. Only counting remains, saving every 5 seconds. A measured minute with the window closed used about 10 milliseconds of CPU.</span></p>
+  <div class="panel energy">
+    <div class="energy-inner">
+      <div class="battery" aria-hidden="true"><div class="fill"></div>🍃</div>
+      <div class="cpu">
+        <span class="zh">关掉窗口之后</span><span class="en">After you close it</span>
+        <b id="cpu">≈ 0%</b>
+        <svg class="graph" viewBox="0 0 320 110" aria-hidden="true">
+          <polyline points="0,78 20,70 40,84 60,40 80,22 100,48 120,18 140,36 160,28 180,62 200,88 230,96 320,98"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="privacy">
+  <h2><span class="zh">只数次数，不看内容</span><span class="en">Counts, never content</span></h2>
+  <p class="sub"><span class="zh">只记按了哪个键、按了几次，不记你打的字。SQLite 存在本机，不联网。统计键盘需要系统里的「输入监控」，由你自己打开。</span><span class="en">It records which key and how often, never what you type. SQLite stays on this Mac and never goes online. Keyboard counting needs Input Monitoring, which you turn on yourself.</span></p>
+  <div class="panel privacy">
+    <div class="flow">
+      <div class="glass-box">A<br><small style="font-weight:600;opacity:.8">Hello ✕</small></div>
+      <div class="dots"></div>
+      <div class="glass-box">1,672<br><small style="font-weight:600;opacity:.8"><span class="zh">只存本机</span><span class="en">This Mac only</span></small></div>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="about">
+  <h2><span class="zh">作者</span><span class="en">Author</span></h2>
+  <p class="sub"><span class="zh">Terry and James，GitHub @Terry1238832。多伦多大学密西沙加校区计算机科学。2024 年 7 月起公开作品。</span><span class="en">Terry and James, GitHub @Terry1238832. Computer Science at the University of Toronto Mississauga. Publishing since July 2024.</span></p>
+  <div class="about">
+    <div class="who">
+      <div class="avatar">T</div>
+      <h3 style="margin-bottom:4px">Terry</h3>
+      <div style="color:var(--muted)">Terry and James</div>
+      <div class="chips">
+        <span>Python</span><span>Java</span><span>React</span><span>FastAPI</span><span>Swift</span>
+      </div>
+    </div>
+    <div class="works">
+      <a class="work" href="https://github.com/Terry1238832/AirMirror">镜投 AirMirror<small>iPhone / iPad 屏幕镜像到 Mac · Swift</small></a>
+      <a class="work" href="https://github.com/Terry1238832/CutFlow">CutFlow<small>Finder 里 ⌘X 剪切、⌘V 移动 · Swift</small></a>
+      <a class="work" href="https://github.com/Terry1238832/PureReader">PureReader<small>只留正文的阅读器</small></a>
+      <a class="work" href="https://github.com/Terry1238832/LocalPinyinIME">LocalPinyinIME<small>Windows 离线拼音输入法 · C++</small></a>
+      <a class="work" href="https://github.com/Terry1238832/Pdf_Merger_Tool">PDF Merger<small>命令行合并 PDF · Python</small></a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  Presscore · <a href="https://github.com/Terry1238832">Terry1238832</a>
+  · <span class="zh">菜单栏应用，数据不上传</span><span class="en">Menu bar app. Nothing is uploaded.</span>
+</footer>
+<script>
+const root = document.documentElement;
+const langBtn = document.getElementById("lang");
+const themeBtn = document.getElementById("theme");
+function setLang(en) {
+  root.lang = en ? "en" : "zh-Hans";
+  langBtn.textContent = en ? "中文" : "English";
+  document.title = en ? "Presscore — a menu bar counter" : "Presscore — 菜单栏里的键鼠统计";
+}
+function setTheme(light) {
+  root.dataset.theme = light ? "light" : "dark";
+  themeBtn.textContent = light ? "☀" : "☾";
+}
+langBtn.onclick = () => setLang(root.lang !== "en");
+themeBtn.onclick = () => setTheme(root.dataset.theme !== "light");
+if (matchMedia("(prefers-color-scheme: light)").matches) setTheme(true);
+const io = new IntersectionObserver((entries) => {
+  for (const entry of entries) if (entry.isIntersecting) entry.target.classList.add("in");
+}, { threshold: .2 });
+document.querySelectorAll(".card").forEach((card, i) => {
+  card.style.animationDelay = (i * 0.08) + "s";
+  io.observe(card);
+});
+</script>
+</body>
+</html>
