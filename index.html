@@ -338,10 +338,23 @@ svg.graph { width: 100%; height: 110px; }
   background: var(--glass); border: 1px solid var(--line);
 }
 .work small { display: block; color: var(--faint); font-weight: 600; margin-top: 4px; }
+
+.realshot, .pair figure { margin: 22px 0 0; }
+.realshot img, .pair img {
+  width: 100%; height: auto; display: block;
+  border-radius: 28px;
+  border: 1px solid rgba(255,255,255,.35);
+  box-shadow: var(--shadow);
+}
+.realshot figcaption, .pair figcaption {
+  margin-top: 10px; color: var(--muted); font-weight: 700; font-size: 14px;
+}
+.pair { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+.pair figure { margin: 0; }
 footer { text-align: center; color: var(--faint); padding: 10px 16px 40px; font-size: 13px; }
 @media (max-width: 800px) {
   nav .links { display: none; }
-  .grid, .about, .energy-inner { grid-template-columns: 1fr; display: grid; }
+  .grid, .about, .energy-inner, .pair { grid-template-columns: 1fr; display: grid; }
   .key { width: 48px; height: 48px; font-size: 18px; border-radius: 12px; }
   .flow { flex-direction: column; }
 }
@@ -402,16 +415,10 @@ footer { text-align: center; color: var(--faint); padding: 10px 16px 40px; font-
     <article class="card"><div class="ico" style="background:linear-gradient(135deg,#7d5cf5,#3d7cf7)">▭</div><h3><span class="zh">边缘光效</span><span class="en">Edge light</span></h3><p><span class="zh">光只出现在屏幕边上。可以选上、下、左、右，或从最近的一边出来。形状是炫光或胶囊。胶囊能变长，挨在一起会合成一条渐变。</span><span class="en">Light stays on the screen edge: top, bottom, left, right, or whichever side is nearest. Glow or capsule. Capsules can lengthen and join into one gradient.</span></p></article>
     <article class="card"><div class="ico" style="background:linear-gradient(135deg,#1ab8c6,#2fbd6b)">字</div><h3><span class="zh">输入特效</span><span class="en">Typing effects</span></h3><p><span class="zh">字在光标旁边弹出来，空格和回车更明显。连击可以跟在文字后面。还能配上打字声，从机械、共鸣到热度，音量可以调。</span><span class="en">Letters pop beside the cursor. Space and return are stronger. A combo can follow the text. Add a key sound, from mechanical and resonant to heat, and set the volume.</span></p></article>
   </div>
-  <div class="panel fx" aria-hidden="true">
-    <div>
-      <div class="fx-screen">
-        <div class="fx-edge"></div>
-        <div class="fx-bloom"></div>
-        <span class="fx-letter">H</span><span class="fx-letter">E</span><span class="fx-letter">L</span><span class="fx-letter">L</span><span class="fx-letter">O</span>
-      </div>
-      <div class="fx-caption"><span class="zh">按键炫光 · 边缘光效 · 输入特效</span><span class="en">Key glare · Edge light · Typing effects</span></div>
-    </div>
-  </div>
+  <figure class="realshot">
+    <img src="shots/effects.jpg" width="1600" height="642" alt="特效页，三块演示卡片：按键炫光、边缘光效、输入特效">
+    <figcaption><span class="zh">特效页。三块卡片各自循环演示，关掉也能先看。</span><span class="en">The Effects page. Each card keeps playing, even while that effect is off.</span></figcaption>
+  </figure>
 </section>
 
 <section class="block" id="features">
@@ -422,13 +429,19 @@ footer { text-align: center; color: var(--faint); padding: 10px 16px 40px; font-
     <article class="card"><div class="ico" style="background:linear-gradient(135deg,#1ab8c6,#3d7cf7)">◎</div><h3><span class="zh">鼠标</span><span class="en">Clicks</span></h3><p><span class="zh">左键、右键、中键分开计数，看占比和最近的点击。</span><span class="en">Left, right, and middle clicks, with share and recent history.</span></p></article>
     <article class="card"><div class="ico" style="background:linear-gradient(135deg,#7d5cf5,#f2669e)">▦</div><h3><span class="zh">时长与应用</span><span class="en">Time and apps</span></h3><p><span class="zh">未休眠的开机时间，和每个前台应用各待了多久。</span><span class="en">Awake screen time, and how long each app stayed in front.</span></p></article>
   </div>
-  <div class="panel heat" aria-hidden="true">
-    <div class="board">
-      <div class="rowk"><i class="k"></i><i class="k hot"></i><i class="k hot"></i><i class="k mid"></i><i class="k"></i><i class="k hot"></i><i class="k mid"></i><i class="k"></i><i class="k hot"></i><i class="k"></i></div>
-      <div class="rowk"><i class="k mid"></i><i class="k hot"></i><i class="k hot"></i><i class="k"></i><i class="k hot"></i><i class="k mid"></i><i class="k hot"></i><i class="k"></i><i class="k mid"></i></div>
-      <div class="rowk"><i class="k"></i><i class="k mid"></i><i class="k hot"></i><i class="k hot"></i><i class="k mid"></i><i class="k"></i><i class="k hot"></i></div>
-      <div class="rowk"><i class="k wide hot"></i></div>
-    </div>
+  <figure class="realshot">
+    <img src="shots/keyboard.jpg" width="1600" height="941" alt="3D 键盘热力图，按得越多颜色越深">
+    <figcaption><span class="zh">键盘页。按得越多越暖，可以转着看，也能按天回放。</span><span class="en">The keyboard page. Keys warm up with use. Orbit it, or play a day back.</span></figcaption>
+  </figure>
+  <div class="pair">
+    <figure>
+      <img src="shots/overview.jpg" width="1600" height="941" alt="概览页，今日按键、点击、使用时长和应用">
+      <figcaption><span class="zh">概览。今天的按键、点击、开机时长，和正在用的应用。</span><span class="en">Overview. Today’s keys, clicks, screen time, and the apps in front.</span></figcaption>
+    </figure>
+    <figure>
+      <img src="shots/computer.jpg" width="1600" height="941" alt="电脑使用页，最近 14 天的时长">
+      <figcaption><span class="zh">电脑使用。最近两周每天开了多久，以及今天的开关机记录。</span><span class="en">Screen time. Two weeks of daily use, and today’s sessions.</span></figcaption>
+    </figure>
   </div>
 </section>
 
