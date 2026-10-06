@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Presscore — 菜单栏里的键鼠统计</title>
-<meta name="description" content="Presscore 住在 macOS 菜单栏里，统计按键、点击、开机时长和前台应用。在线默认关闭，关掉时不联网。打开之后才检查更新，并按你勾选的范围和好友比较合计。">
+<meta name="description" content="Presscore 住在 macOS 菜单栏里，统计按键、点击、开机时长和前台应用。1.1 带来按键炫光、边缘光效和输入特效。在线默认关闭，关掉时不联网。">
 <meta property="og:title" content="Presscore">
-<meta property="og:description" content="看见每一次敲击。在线默认关闭。关到菜单栏之后，几乎不耗电。">
+<meta property="og:description" content="看见每一次敲击。1.1 新加三种屏幕特效。在线默认关闭。">
 <meta property="og:url" content="https://terry1238832.github.io/Presscore/">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='3' y='3' width='26' height='26' rx='8' fill='%235b57f5'/%3E%3Crect x='9' y='9' width='14' height='14' rx='4' fill='none' stroke='white' stroke-width='2.4'/%3E%3C/svg%3E">
 <style>
@@ -234,6 +234,36 @@ svg.graph { width: 100%; height: 110px; }
 .graph polyline { fill: none; stroke: white; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
 .privacy { background: linear-gradient(120deg, #3aa0d8, #4d6df0); }
 .friends { background: linear-gradient(120deg, #ee5a8a, #ff9a4a); }
+.fx { background: linear-gradient(145deg, #24162e, #3a2148 46%, #1a2744); min-height: 320px; }
+.fx-screen {
+  width: min(640px, 86%); height: 168px; border-radius: 28px; position: relative; overflow: hidden;
+  background: rgba(0,0,0,.35); border: 1px solid rgba(255,255,255,.28);
+  box-shadow: inset 0 0 0 6px rgba(255,255,255,.06);
+}
+.fx-edge {
+  position: absolute; left: 8%; right: 8%; top: 0; height: 10px; border-radius: 0 0 10px 10px;
+  background: linear-gradient(90deg, #7d5cf5, #ff8a3d, #1ab8c6);
+  animation: edge 3.2s ease-in-out infinite;
+}
+.fx-bloom {
+  position: absolute; width: 90px; height: 54px; border-radius: 50%; left: 18%; top: 46px;
+  background: radial-gradient(circle, rgba(255,255,255,.95), rgba(255,138,61,.55) 42%, transparent 70%);
+  animation: bloom 3.2s ease-in-out infinite;
+}
+.fx-letter {
+  position: absolute; top: 58px; color: white; font-weight: 800; font-size: 28px; letter-spacing: -.04em;
+  text-shadow: 3px 0 #ff4d6a, -3px 0 #3d7cf7;
+  animation: pop 3.2s cubic-bezier(.2,1.4,.3,1) infinite;
+}
+.fx-letter:nth-of-type(1) { left: 34%; }
+.fx-letter:nth-of-type(2) { left: 44%; animation-delay: .12s; }
+.fx-letter:nth-of-type(3) { left: 54%; animation-delay: .24s; }
+.fx-letter:nth-of-type(4) { left: 64%; animation-delay: .36s; }
+.fx-letter:nth-of-type(5) { left: 74%; animation-delay: .48s; }
+.fx-caption { margin-top: 18px; color: rgba(255,255,255,.82); font-weight: 700; }
+@keyframes edge { 50% { transform: scaleX(1.08); filter: brightness(1.25); } }
+@keyframes bloom { 0%, 100% { opacity: .35; transform: scale(.8); } 40% { opacity: 1; transform: scale(1.15); } }
+@keyframes pop { 0%, 12% { opacity: 0; transform: translateY(16px) rotate(-8deg); } 28%, 70% { opacity: 1; transform: none; } 100% { opacity: 0; transform: translateY(-18px); } }
 .podium { display: flex; align-items: flex-end; gap: 12px; height: 210px; }
 .step {
   width: 78px; border-radius: 16px 16px 8px 8px; color: white;
@@ -325,6 +355,7 @@ footer { text-align: center; color: var(--faint); padding: 10px 16px 40px; font-
 <nav>
   <a class="brand" href="#top"><span class="cap"></span> Presscore</a>
   <div class="links">
+    <a href="#effects"><span class="zh">特效</span><span class="en">Effects</span></a>
     <a href="#features"><span class="zh">功能</span><span class="en">Features</span></a>
     <a href="#energy"><span class="zh">能耗</span><span class="en">Energy</span></a>
     <a href="#privacy"><span class="zh">隐私</span><span class="en">Privacy</span></a>
@@ -344,8 +375,8 @@ footer { text-align: center; color: var(--faint); padding: 10px 16px 40px; font-
     <span class="en">Presscore lives in the macOS menu bar and counts keystrokes, clicks, screen time, and time in each app. Online is off unless you turn it on, and while it is off nothing goes online. Close the window and the drawing stops.</span>
   </p>
   <div class="row">
-    <a class="cta solid" href="https://github.com/Terry1238832/Presscore/releases/download/v1.0.7.2/Presscore-1.0.7.2.dmg"><span class="zh">下载 macOS 版 1.0.7.2</span><span class="en">Download 1.0.7.2 for Mac</span></a>
-    <a class="cta" href="#features"><span class="zh">看看它做什么</span><span class="en">See what it does</span></a>
+    <a class="cta solid" href="https://github.com/Terry1238832/Presscore/releases/download/v1.1/Presscore-1.1.dmg"><span class="zh">下载 macOS 版 1.1</span><span class="en">Download 1.1 for Mac</span></a>
+    <a class="cta" href="#effects"><span class="zh">看看 1.1 的特效</span><span class="en">See the 1.1 effects</span></a>
   </div>
   <p class="lede" style="font-size:14px;margin-top:14px">
     <span class="zh">需要 macOS 14 或更新。安装包未公证：第一次打开时按住 Control 点图标，选择「打开」。</span>
@@ -361,6 +392,26 @@ footer { text-align: center; color: var(--faint); padding: 10px 16px 40px; font-
     <span class="plus">+1</span><span class="plus">+1</span><span class="plus">+1</span><span class="plus">+1</span><span class="plus">+1</span>
   </div>
 </header>
+
+<section class="block" id="effects">
+  <h2><span class="zh">1.1，打下去屏幕会回应</span><span class="en">1.1 answers every key</span></h2>
+  <p class="sub"><span class="zh">侧边栏打开「特效」。三块大卡片各自循环演示，关掉也能先看懂它在干什么。点进去再开启和调整。三种一次只能开一种，默认都是关的。</span><span class="en">Open Effects in the sidebar. Three large cards keep demonstrating themselves, even while they are off. Open one to turn it on and adjust it. Only one runs at a time, and all three start off.</span></p>
+  <div class="grid">
+    <article class="card"><div class="ico" style="background:linear-gradient(135deg,#ffb020,#ff4d6a)">✦</div><h3><span class="zh">按键炫光</span><span class="en">Key glare</span></h3><p><span class="zh">按下键盘，屏幕上和这个键对应的位置会闪一下。颜色可以是纯色、渐变、随机或彩虹，透明度可以单独调。</span><span class="en">A key flashes on the screen where that key sits. Pick a solid color, a gradient, a random color, or a rainbow, and set its opacity.</span></p></article>
+    <article class="card"><div class="ico" style="background:linear-gradient(135deg,#7d5cf5,#3d7cf7)">▭</div><h3><span class="zh">边缘光效</span><span class="en">Edge light</span></h3><p><span class="zh">光只出现在屏幕边上。可以选上、下、左、右，或从最近的一边出来。形状是炫光或胶囊。胶囊能变长，挨在一起会合成一条渐变。</span><span class="en">Light stays on the screen edge: top, bottom, left, right, or whichever side is nearest. Glow or capsule. Capsules can lengthen and join into one gradient.</span></p></article>
+    <article class="card"><div class="ico" style="background:linear-gradient(135deg,#1ab8c6,#2fbd6b)">字</div><h3><span class="zh">输入特效</span><span class="en">Typing effects</span></h3><p><span class="zh">字在光标旁边弹出来，空格和回车更明显。连击可以跟在文字后面。还能配上打字声，从机械、共鸣到热度，音量可以调。</span><span class="en">Letters pop beside the cursor. Space and return are stronger. A combo can follow the text. Add a key sound, from mechanical and resonant to heat, and set the volume.</span></p></article>
+  </div>
+  <div class="panel fx" aria-hidden="true">
+    <div>
+      <div class="fx-screen">
+        <div class="fx-edge"></div>
+        <div class="fx-bloom"></div>
+        <span class="fx-letter">H</span><span class="fx-letter">E</span><span class="fx-letter">L</span><span class="fx-letter">L</span><span class="fx-letter">O</span>
+      </div>
+      <div class="fx-caption"><span class="zh">按键炫光 · 边缘光效 · 输入特效</span><span class="en">Key glare · Edge light · Typing effects</span></div>
+    </div>
+  </div>
+</section>
 
 <section class="block" id="features">
   <h2><span class="zh">一天，摊开来看</span><span class="en">A day, laid out</span></h2>
@@ -444,7 +495,7 @@ footer { text-align: center; color: var(--faint); padding: 10px 16px 40px; font-
 </section>
 
 <footer>
-  Presscore 1.0.7.2 · <span class="zh">在线默认关闭。关掉时，什么都不上传。</span><span class="en">Online starts off. While it is off, nothing is uploaded.</span>
+  Presscore 1.1 · <span class="zh">在线默认关闭。关掉时，什么都不上传。</span><span class="en">Online starts off. While it is off, nothing is uploaded.</span>
 </footer>
 <script>
 const root = document.documentElement;
