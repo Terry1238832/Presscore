@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="zh-Hans">
-<!-- Presscore 1.1 -->
+<!-- Presscore 1.2 -->
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Presscore — 菜单栏里的键鼠统计</title>
-<meta name="description" content="Presscore 住在 macOS 菜单栏里，统计按键、点击、开机时长和前台应用。1.1 带来按键炫光、边缘光效和输入特效。在线默认关闭，关掉时不联网。">
+<meta name="description" content="Presscore 住在 macOS 菜单栏里，统计按键、点击、开机时长和前台应用。1.2 关到菜单栏后卸掉界面，计数和屏幕特效继续。在线默认关闭。">
 <meta property="og:title" content="Presscore">
 <meta property="og:description" content="看见每一次敲击。屏幕特效和输入特效可以各开一个。在线默认关闭。">
 <meta property="og:url" content="https://terry1238832.github.io/Presscore/">
@@ -385,12 +385,12 @@ footer { text-align: center; color: var(--faint); padding: 10px 16px 40px; font-
   <div class="kicker"><span class="zh">关到菜单栏 · 几乎不耗电</span><span class="en">Menu bar · almost no power</span></div>
   <h1><span class="zh">看见每一次敲击</span><span class="en">See every keystroke</span></h1>
   <p class="lede">
-    <span class="zh">Presscore 住在 macOS 菜单栏里，记下按键、点击、开机时长和每个应用的前台时间。在线默认关闭，关掉时不联网。窗口一关，画面全停。</span>
-    <span class="en">Presscore lives in the macOS menu bar and counts keystrokes, clicks, screen time, and time in each app. Online is off unless you turn it on, and while it is off nothing goes online. Close the window and the drawing stops.</span>
+    <span class="zh">Presscore 住在 macOS 菜单栏里，记下按键、点击、开机时长和每个应用的前台时间。在线默认关闭，关掉时不联网。窗口一关，界面卸掉，计数和屏幕特效还在。再打开时会先加载回来。</span>
+    <span class="en">Presscore lives in the macOS menu bar and counts keystrokes, clicks, screen time, and time in each app. Online is off unless you turn it on, and while it is off nothing goes online. Close the window and the interface unloads, while counting and the on-screen effects keep going. Opening it again loads the interface back.</span>
   </p>
   <div class="row">
-    <a class="cta solid" href="https://github.com/Terry1238832/Presscore/releases/download/v1.1.1/Presscore-1.1.1.dmg"><span class="zh">下载 macOS 版 1.1.1</span><span class="en">Download 1.1.1 for Mac</span></a>
-    <a class="cta" href="#effects"><span class="zh">看看 1.1 的特效</span><span class="en">See the 1.1 effects</span></a>
+    <a class="cta solid" href="https://github.com/Terry1238832/Presscore/releases/download/v1.2.0/Presscore-1.2.0.dmg"><span class="zh">下载 macOS 版 1.2.0</span><span class="en">Download 1.2.0 for Mac</span></a>
+    <a class="cta" href="#effects"><span class="zh">看看特效</span><span class="en">See the effects</span></a>
   </div>
   <p class="lede" style="font-size:14px;margin-top:14px">
     <span class="zh">需要 macOS 14 或更新。安装包未公证：第一次打开时按住 Control 点图标，选择「打开」。</span>
@@ -447,7 +447,7 @@ footer { text-align: center; color: var(--faint); padding: 10px 16px 40px; font-
 
 <section class="block" id="energy">
   <h2><span class="zh">放在后台，几乎不耗电</span><span class="en">Almost no power in the background</span></h2>
-  <p class="sub"><span class="zh">窗口收进菜单栏之后，键盘预览、动画和界面刷新全部停下。只剩计数，每 5 秒批量写一次。实测关窗后一分钟大约只用 10 毫秒 CPU。</span><span class="en">Once the window is in the menu bar, the keyboard preview, animation, and interface updates all stop. Only counting remains, saving every 5 seconds. A measured minute with the window closed used about 10 milliseconds of CPU.</span></p>
+  <p class="sub"><span class="zh">窗口收进菜单栏之后，页面、图表和 3D 键盘会卸掉。按键、点击和使用时长继续记，屏幕上的特效和按键音也继续。再点开时会先显示「正在打开」，把界面装回来。</span><span class="en">Once the window is in the menu bar, the pages, charts, and 3D keyboard unload. Keystrokes, clicks, and screen time keep counting, and the on-screen effects and key sounds keep playing. Opening it again shows a short loading animation while the interface comes back.</span></p>
   <div class="panel energy">
     <div class="energy-inner">
       <div class="battery" aria-hidden="true"><div class="fill"></div>🍃</div>
@@ -509,7 +509,7 @@ footer { text-align: center; color: var(--faint); padding: 10px 16px 40px; font-
 </section>
 
 <footer>
-  Presscore 1.1.1 · <span class="zh">在线默认关闭。关掉时，什么都不上传。</span><span class="en">Online starts off. While it is off, nothing is uploaded.</span>
+  Presscore 1.2.0 · <span class="zh">在线默认关闭。关掉时，什么都不上传。</span><span class="en">Online starts off. While it is off, nothing is uploaded.</span>
 </footer>
 <script>
 const root = document.documentElement;
